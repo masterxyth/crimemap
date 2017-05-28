@@ -27,6 +27,7 @@ def add():
         print e
     return home()
 
+@app.route('/clear')
 def clear():
     try:
         DB.clear_all()
