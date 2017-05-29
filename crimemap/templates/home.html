@@ -1,17 +1,77 @@
-<html>
-<body>
-  <head>
-    <title>Crime Map</title>
-  </head>
+<!DOCTYPE html>
+<html lang="en">
 
-  <h1>Crime Map</h1>
-  <form action="/add" method="POST">
-    <input type="text" name="userinput">
-    <input type="submit" value="Submit">
-    </form>
-  <a href="/clear">clear</a>
-  {% for userinput in data %}
-    <p>{{userinput}}</p>
-    {% endfor %}
-</body>
+    <head>
+
+        <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}" />
+
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD66OquSLC-VEeGCs_tZHHw-KBV5lIhdKs&callback=initMap" type="text/javascript">
+        </script>
+
+        <script>
+            // initializing the map
+            var map;
+            var marker;
+
+            function initMap() {
+                var uluru = {
+                    lat: -25.363,
+                    lng: 131.044
+                };
+                var mapOptions = {
+                    center: new google.maps.LatLng(-33.30578381949298, 26.523442268371582),
+                    zoom: 15
+                };
+                map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+                google.maps.event.addListener(map, 'click', function(event) {
+                    placeMarker(event.latLng);
+                });
+            }
+
+            // initializing the marker
+
+            function placeMarker(location) {
+                if (marker) {
+                    marker.setPosition(location);
+                } else {
+                    marker = new google.maps.Marker({
+                        position: location,
+                        map: map
+                    });
+                }
+                document.getElementById('latitude').value = location.lat();
+                document.getElementById('longitude').value = location.lng();
+            }
+        </script>
+
+    </head>
+
+    <body onload="initMap()">
+        <h1>CrimeMap</h1>
+        <p>A map of recent criminal activity in the Grahamstown area.</p>
+        <div id="map-canvas"></div>
+
+        <div id="newcrimeform">
+            <h2>Submit new crime</h2>
+            <form action="/submitcrime" method="POST">
+                <label for="category">Category</label>
+                <select name="category" id="category">
+     <option value="mugging">Mugging</option>
+     <option value="breakin">Break-in</option>
+    </select>
+                <label for="date">Date</label>
+                <input name="date" id="date" type="date">
+                <label for="latitude">Latitude</label>
+                <input name="latitude" id="latitude" type="text">
+                <label for="longitude">Longitude</label>
+                <input name="longitude" id="longitude" type="text">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" placeholder="A brief but detailed  description of the crime"></textarea>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </body>
+    <div id="map-canvas" style="width:80%; height:500px;"></div>
+    </body>
+
 </html>
